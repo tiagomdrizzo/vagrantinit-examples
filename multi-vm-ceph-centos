@@ -1,0 +1,50 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+Vagrant.configure("2") do |config|
+  config.vm.box = "centos76"
+  config.vm.provision :shell, :path => "scripts/setup_ssh.sh"
+  config.vm.provision :shell, :path => "scripts/ceph_preflight.sh", :args => "repos", :privileged => true
+  config.vm.provision :shell, :path => "scripts/ceph_preflight.sh", :args => "cephuser", :privileged => true
+  # Ceph admin: cluster manager
+  config.vm.define "admin-node" do |admin|
+    admin.vm.hostname = "admin-node"
+    admin.vm.provision :shell, :path => "scripts/ceph_preflight.sh", :args => "admpkg", :privileged => true
+    admin.vm.provision :shell, :path => "scripts/ceph_preflight.sh", :args => "admin_sshkey", :privileged => true
+    admin.vm.network :private_network, ip: "172.21.12.10",
+                     :libvirt__domain_name => "example.lab"
+    admin.vm.provision :shell, :inline => "yum install -yq ceph-deploy", :privileged => true
+    config.vm.provider :libvirt do |domain|
+      domain.memory = 1024
+      domain.cpus = 1
+    end
+  end
+  # Ceph client: client machine to mount volumes and cluster interaction.
+  config.vm.define "client-node" do |client|
+    client.vm.hostname = "client-node"
+    client.vm.network :private_network, ip: "172.21.12.11",
+                      :libvirt__domain_name => "example.lab"
+    # ceph-deploy will assume remote machines have python2 installed
+    client.vm.provision :shell, :path => "scripts/ceph_preflight.sh", :args => "admpkg", :privileged => true
+    config.vm.provider :libvirt do |domain|
+      domain.memory = 1024
+      domain.cpus = 1
+    end
+  end
+  # Provision: three nodes to be Ceph servers
+  (1..3).each do |i|
+    config.vm.define "node#{i}" do |config|
+      config.vm.hostname = "node#{i}"
+      config.vm.network :private_network, ip: "172.21.12.#{i+11}",
+                        :libvirt__domain_name => "example.lab"
+      # ceph-deploy will assume remote machines have python2 installed
+      config.vm.provision :shell, :path => "scripts/ceph_preflight.sh", :args => "nodepkg", :privileged => true
+      config.vm.provider :libvirt do |domain|
+        domain.memory = 1024
+        domain.cpus = 1
+        domain.storage :file, :size => '20G', :type => 'qcow2', :serial => 'abcde01'
+        domain.storage :file, :size => '20G', :type => 'qcow2', :serial => 'abcde02'
+        domain.storage :file, :size => '20G', :type => 'qcow2', :serial => 'abcde02'
+      end
+    end
+  end
+end
