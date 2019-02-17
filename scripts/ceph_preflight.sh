@@ -42,7 +42,7 @@ EOM
 }
 
 ceph_pkg_admin_node() {
-  yum install -y -q ceph-deploy ansible sshpass
+  yum install -y -q ceph-deploy ansible sshpass python2-pip.noarch
 }
 
 ceph_pkg_nodes() {
