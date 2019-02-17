@@ -46,7 +46,7 @@ ceph_pkg_admin_node() {
 }
 
 ceph_pkg_nodes() {
-  yum install -y -q ntp ntpdate python
+  yum install -y -q ntp ntpdate python sshpass
   systemctl enable ntpd.service
   systemctl start ntpd.service
 }
@@ -64,8 +64,8 @@ sed -i "s/^.*requiretty/#Defaults requiretty/" /etc/sudoers
 ceph_sshkey_admin_node() {
 # Setup keys for custom user
 mkdir -m 0700 -p $CEPH_USER_SSH_HOME
-echo -e 'n\n' | ssh-keygen -q -C "$CEPH_USER_NAME ssh key" -f "$CEPH_USER_SSH_HOME/id_ceph_rsa" -q -N ""
-cat "$CEPH_USER_SSH_HOME/id_ceph_rsa.pub" >> "$CEPH_USER_AUTHORIZED_KEYS"
+echo -e 'n\n' | ssh-keygen -q -C "$CEPH_USER_NAME ssh key" -f "$CEPH_USER_SSH_HOME/id_rsa" -q -N ""
+cat "$CEPH_USER_SSH_HOME/id_rsa.pub" >> "$CEPH_USER_AUTHORIZED_KEYS"
 chmod 644 "$CEPH_USER_AUTHORIZED_KEYS"
 
 # OpenSSH client configuration
@@ -75,7 +75,7 @@ Host *
    UserKnownHostsFile /dev/null
    StrictHostKeyChecking no
    PasswordAuthentication no
-   IdentityFile $CEPH_USER_SSH_HOME/id_ceph_rsa
+   IdentityFile $CEPH_USER_SSH_HOME/id_rsa
    IdentitiesOnly yes
    LogLevel FATAL
    ForwardAgent yes
