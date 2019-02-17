@@ -16,7 +16,7 @@ cat << EOF > "$CUSTOM_USER_SSH_HOME"/config
 Host *
    UserKnownHostsFile /dev/null
    StrictHostKeyChecking no
-   PasswordAuthentication no
+   PasswordAuthentication yes
    IdentitiesOnly yes
    LogLevel FATAL
    ForwardAgent yes
@@ -33,7 +33,7 @@ cat << EOF > "$CUSTOM_USER_SSH_HOME"/config
 Host *
    UserKnownHostsFile /dev/null
    StrictHostKeyChecking no
-   PasswordAuthentication no
+   PasswordAuthentication yes
    IdentitiesOnly yes
    LogLevel FATAL
    ForwardAgent yes
