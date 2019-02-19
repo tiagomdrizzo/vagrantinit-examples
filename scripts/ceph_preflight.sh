@@ -1,9 +1,9 @@
 #!/bin/bash
 # From: http://docs.ceph.com/docs/mimic/start/quick-start-preflight/#ceph-deploy-setup
 # Variables
-CEPH_USER_NAME="cephuser"
-CEPH_USER_GROUP="cephuser"
-CEPH_USER_PASSWD="cephuser"
+CEPH_USER_NAME="ceph"
+CEPH_USER_GROUP="ceph"
+CEPH_USER_PASSWD="ceph"
 CEPH_USER_HOME="/home/$CEPH_USER_NAME"
 CEPH_USER_SSH_HOME="$CEPH_USER_HOME/.ssh"
 CEPH_USER_AUTHORIZED_KEYS="$CEPH_USER_SSH_HOME/authorized_keys"
@@ -42,7 +42,7 @@ EOM
 }
 
 ceph_pkg_admin_node() {
-  yum install -y -q ceph-deploy ansible sshpass python2-pip.noarch
+  yum install -y -q ceph-deploy ansible sshpass python2-pip.noarch git
 }
 
 ceph_pkg_nodes() {

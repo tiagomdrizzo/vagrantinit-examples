@@ -7,6 +7,10 @@ VAGRANT_HOME="/home/vagrant"
 VAGRANT_SSH_HOME="$VAGRANT_HOME/.ssh"
 VAGRANT_AUTHORIZED_KEYS="$VAGRANT_SSH_HOME/authorized_keys"
 
+#sudo sed -i -e 's/^\(#\)\?PermitRootLogin\s\+\(yes\|no\)/PermitRootLogin yes/' \
+#  -e 's/^\(#\)\?PasswordAuthentication\s\+\(yes\|no\)/PasswordAuthentication yes/' \
+#  -e 's/^\(#\)\?UseDNS\s\+\(yes\|no\)/UseDNS yes/' /etc/ssh/sshd_config
+
 # Setup keys for root user.
 echo -e 'n\n' | ssh-keygen -q -C "root ssh key" -f "$ROOT_SSH_HOME/id_rsa" -q -N ""
 cat "$ROOT_SSH_HOME/id_rsa.pub" >> "$ROOT_AUTHORIZED_KEYS"
